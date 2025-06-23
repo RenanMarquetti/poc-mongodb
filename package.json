@@ -5,15 +5,17 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "pnpm jest"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.6.2",
   "dependencies": {
+    "@types/jest": "^30.0.0",
     "jest": "^30.0.2",
     "mongoose": "^8.16.0",
-    "ts-jest": "^29.4.0"
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.8.3"
   }
 }
