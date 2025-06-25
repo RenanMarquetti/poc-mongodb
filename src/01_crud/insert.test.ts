@@ -1,21 +1,22 @@
 import { connect, db, disconnect } from '../00_connection';
 
-beforeAll(connect)
-
 type People = {
 	name: string;
 	sobrenome: string;
 	dataNacimento: Date;
 };
 
-const firstPeople: People = {
-	name: "Renan",
-	sobrenome: "Marquetti",
-	dataNacimento: new Date('1996-11-03'),
-};
+const data: Array<People> = [
+	{name: "Renan", sobrenome: "Marquetti", dataNacimento: new Date('1996-11-03')} as People,
+	{name: "Jaqueline", sobrenome: "Brizola da Silva Marquetti", dataNacimento: new Date('1993-11-03')} as People,
+	{name: "Abraão", sobrenome: "Brizola Marquetti", dataNacimento: new Date('2022-11-29')} as People,
+	{name: "Israel", sobrenome: "Brizola Marquetti", dataNacimento: new Date('2024-11-27')} as People,
+];
 
+beforeAll(connect)
 
 it('insertOne', async () => {
+	const firstPeople = data[0];
 
 	const collection = db.collection('people');
 
@@ -35,12 +36,7 @@ it('insertOne', async () => {
 });
 
 it('insertMany', async () => {
-
-	const peoples: Array<People> = [
-		{name: "Jaqueline", sobrenome: "Brizola da Silva Marquetti", dataNacimento: new Date('1993-11-03')} as People,
-		{name: "Abraão", sobrenome: "Brizola Marquetti", dataNacimento: new Date('2022-11-29')} as People,
-		{name: "Israel", sobrenome: "Brizola Marquetti", dataNacimento: new Date('2024-11-27')} as People,
-	];
+	const peoples = data.slice(1)
 
 	const collection = db.collection('people');
 	await collection.insertMany(peoples);
@@ -49,11 +45,11 @@ it('insertMany', async () => {
 
 	expect(res).toBeDefined()
 
-	expect(res.length).toBe(4);
+	expect(res.length).toBe(data.length);
 
-	expect(res).toContainEqual(firstPeople);
-	peoples.forEach(p => expect(res).toContainEqual(p));
+	data.forEach(p => expect(res).toContainEqual(p));
 
 });
 
 afterAll(disconnect);
+
