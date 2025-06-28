@@ -149,7 +149,7 @@ test('should select inventory for size.l less than 15', async () => {
 
 test('should select inventory for size.l less than 15 and size.uom equals to "in" and status equals to "D"', async () => {
 
-  const lambdaFilter = i => i.size.h < 15 && i.size.uom == 'in' && status == 'D';
+  const lambdaFilter = i => i.size.h < 15 && i.size.uom == 'in' && i.status == 'D';
 
   const paramFind = {'size.h': {$lt: 15}, 'size.uom': 'in', status: 'D'};
 
@@ -158,7 +158,7 @@ test('should select inventory for size.l less than 15 and size.uom equals to "in
 
 test('should select inventory for size equals to { h: 14, w: 21, uom: "cm" }', async () => {
 
-  const lambdaFilter = i => i.size == { h: 14, w: 21, uom: 'cm' };
+  const lambdaFilter = i => JSON.stringify(i.size) == JSON.stringify({ h: 14, w: 21, uom: 'cm' });
 
   const paramFind = {size: { h: 14, w: 21, uom: 'cm' }}; // esse método de busca não é aconcelhado, porque é necessario uma correspondencia exata, se mudar a ordem dos campos já não reconhece 
 

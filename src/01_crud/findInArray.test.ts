@@ -58,6 +58,24 @@ beforeAll(async () => {
   await db.collection('inventory').insertMany(data);
 })
 
+// Comparação por igualdade/uniformidade
+test('should selecte inventory tags is includes "red"', async () => {
+
+  const lambdaFilter = i => i.tags.includes("red");
+
+  const paramFind = {tags: "red"};
+
+  await execTest(lambdaFilter, paramFind);
+});
+
+test('should selecte inventory tags first value is to equals "red"', async () => {
+
+  const lambdaFilter = i => i.tags[0] == "red";
+
+  const paramFind = {'tags.0': "red"};
+
+  await execTest(lambdaFilter, paramFind);
+});
 
 test('should selecte inventory tags is exactly ["red", "blank"]', async () => {
   
@@ -77,15 +95,16 @@ test('should selecte inventory tags is includes ["red", "blank"]', async () => {
   await execTest(lambdaFilter, paramFind);
 });
 
-test('should selecte inventory tags is includes "red"', async () => {
+test('should selecte inventory tags is length equals three', async () => {
 
-  const lambdaFilter = i => i.tags.includes("red");
+  const lambdaFilter = i => i.tags.length == 3;
 
-  const paramFind = {tags: "red"};
+  const paramFind = {tags: {$size: 3}};
 
   await execTest(lambdaFilter, paramFind);
 });
 
+// Comparação por referencia/relativa
 test('should selecte inventory dim_cm includes value greater than 25', async () => {
 
   const lambdaFilter = i => i.dim_cm.findIndex(d => d > 25) > -1;
@@ -113,25 +132,24 @@ test('should selecte inventory dim_cm includes value greater than 22 and less th
   await execTest(lambdaFilter, paramFind);
 });
 
-test('should selecte inventory dim_cm first value is greater than 25', async () => {
+// Casos compostos
+test('should selecte inventory tags is length equals two and includes values ["red", "blank"]', async () => {
 
-  const lambdaFilter = i => i.dim_cm[1] > 25;
+  const lambdaFilter = i => i.tags.length == 2 && i.tags.includes("red") && i.tags.includes("blank");
 
-  const paramFind = {'dim_cm.1': {$gt: 25}};
-
-  await execTest(lambdaFilter, paramFind);
-});
-
-
-test('should selecte inventory dim_cm is length equals three', async () => {
-
-  const lambdaFilter = i => i.dim_cm.length == 3;
-
-  const paramFind = {dim_cm: {$size: 3}};
+  const paramFind = {tags: {$size: 2, $all: ["red", "blank"]}};
 
   await execTest(lambdaFilter, paramFind);
 });
 
+test('should selecte inventory dim_cm is first value equals 26 and all values greater than 22 and less than 30', async () => {
+
+  const lambdaFilter = i => i.dim_cm[0] == 26 && i.dim_cm.findIndex(d => d > 22 && d < 30) > -1;
+
+  const paramFind = {dim_cm: {'dim_cm.0': 26, $elemMatch: {$gt: 22, $lt: 30}}};
+
+  await execTest(lambdaFilter, paramFind);
+});
 
 afterAll(disconnect);
 
